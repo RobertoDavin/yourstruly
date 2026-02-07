@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Edell ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+        body {
+            background-color: #fce4ec; /* Soft Pink */
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Keeps scrollbars away */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
+            line-height: 1.3;
+        }
+
+        .gif-container img {
+            width: 250px;
+            max-width: 80%;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            border: 5px solid white;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            position: relative;
+        }
+
+        #yesBtn { 
+            background-color: #ff4081; 
+            color: white; 
+            transform: scale(1);
+        }
+        
+        #yesBtn:hover {
+            background-color: #f50057;
+            box-shadow: 0 8px 15px rgba(245, 0, 87, 0.3);
+        }
+
+        #noBtn { 
+            background-color: #ffffff; 
+            color: #d81b60; 
+            border: 2px solid #f8bbd0;
+        }
+        
+        #noBtn:hover {
+            background-color: #fce4ec;
+        }
+
+        .hidden { display: none; }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; 
+            pointer-events: none; 
+        }
+
+        #success-message {
+            position: relative;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #880e4f;
+            margin-top: 10px;
+        }
+
+        .credit {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #ad1457;
+            opacity: 0.6;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="question-screen">
+        <div class="gif-container">
+            <img id="mainImage" src="https://media.tenor.com/kzG1i1ra1MMAAAAm/milk-hi.webp" alt="Asking Bear">
+        </div>
+        
+        <h1>Edell, you make my world brighter ✨<br>Will you be my girlfriend? 🌹</h1>
+        
+        <div class="buttons">
+            <button class="btn" id="yesBtn" onclick="acceptLove()">Yes, I will! 💖</button>
+            <button class="btn" id="noBtn" onclick="rejectLove()">No</button>
+        </div>
+    </div>
+
+    <canvas id="flowerCanvas" class="hidden"></canvas>
+    
+    <div class="container hidden" id="success-screen">
+        <div id="success-message">
+            <div class="gif-container">
+                <img src="https://media.tenor.com/jS_Q9pR3QlAAAAAM/hug.gif" alt="Love Bears">
+            </div>
+            
+            <h1>Best decision ever! 🥰</h1>
+            <p>Here's the flowers you've asked for! Look at it all growing for you. 🌺<br>
+            <strong>Official Anniversary:</strong> 7 February 2026 📌</p>
+            <div class="credit">Made by Roberto Davin 👀</div>
+        </div>
+    </div>
+
+    <script>
+        let yesButtonSize = 1.2;
+        let noClickCount = 0;
+        
+        const noTexts = [
+            "No", 
+            "Are you sure?", 
+            "Edell, really?", 
+            "Don't do this to me 🥺", 
+            "Just click Yes!", 
+            "I'm gonna cry...", 
+            "You're breaking my heart 💔", 
+            "Okay, I'll ask nicely...", 
+            "Pretty please?", 
+            "Last chance!", 
+            "Okay, I'm hiding the No button!"
+        ];
+
+        function rejectLove() {
+            noClickCount++;
+            const image = document.getElementById("mainImage");
+
+            if (noClickCount === 1) {
+                image.src = "https://media.tenor.com/zmKEAwCgxhEAAAAm/milk-and-mocha.webp";
+            } else if (noClickCount === 2) {
+                image.src = "https://media.tenor.com/8ZzwlY1LeysAAAAm/milk-and-mocha-sad.webp";
+            } else if (noClickCount === 3) {
+                image.src = "https://media.tenor.com/P7LyTvDSvDIAAAAm/milk-and-mocha.webp";
+            } else if (noClickCount >= 4) {
+                image.src = "https://media.tenor.com/5bz1upKNMjwAAAAm/milk-mocha-milk-mocha-bye.webp";
+            }
+            
+            yesButtonSize += 0.4; 
+            const yesBtn = document.getElementById("yesBtn");
+            yesBtn.style.fontSize = `${yesButtonSize}rem`;
+            yesBtn.style.padding = `${15 + noClickCount * 5}px ${30 + noClickCount * 10}px`;
+            
+            const noBtn = document.getElementById("noBtn");
+            
+            if (noClickCount < noTexts.length) {
+                noBtn.innerText = noTexts[noClickCount];
+            } else {
+                noBtn.innerText = "Okay, I give up (Just kidding, click Yes!)";
+                noBtn.style.display = 'none';
+            }
+        }
+
+        function acceptLove() {
+            document.getElementById("question-screen").style.display = "none";
+            document.getElementById("success-screen").classList.remove("hidden");
+            document.getElementById("flowerCanvas").classList.remove("hidden");
+            startFlowers();
+        }
+
+        const canvas = document.getElementById('flowerCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let flowers = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function random(min, max) { return Math.random() * (max - min) + min; }
+
+        class Flower {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.size = 0; this.maxSize = random(20, 50);
+                this.growthSpeed = random(0.1, 0.3);
+                this.petalCount = Math.floor(random(5, 9));
+                this.finished = false;
+            }
+            draw() {
+                if (this.size < this.maxSize) this.size += this.growthSpeed;
+                else this.finished = true;
+                
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = this.color;
+                
+                for (let i = 0; i < this.petalCount; i++) {
+                    ctx.rotate((Math.PI * 2) / this.petalCount);
+                    ctx.beginPath();
+                    ctx.ellipse(0, this.size / 2, this.size / 3, this.size, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.fillStyle = "#ffeb3b";
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function startFlowers() {
+            let interval = setInterval(() => {
+                const x = random(0, width); 
+                const y = random(0, height);
+                
+                const colors = [
+                    "#F8B9D4", // Pink
+                    "#f48fb1", // Darker Pink
+                    "#ba68c8", // Purple
+                    "#ef9a9a", // Reddish
+                    "#fff59d", // Yellow
+                    "#00FFFF"  // Cyan
+                ];
+                
+                const color = colors[Math.floor(random(0, colors.length))];
+                flowers.push(new Flower(x, y, color));
+                
+                if (flowers.length > 200) clearInterval(interval);
+            }, 30);
+            
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            flowers.forEach(flower => { 
+                if (!flower.finished) flower.draw(); 
+            });
+        }
+    </script>
+</body>
+</html>
